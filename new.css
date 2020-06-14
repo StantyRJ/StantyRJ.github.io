@@ -1,0 +1,89 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+} 
+
+header{
+    display: flex;
+    width: 90%;
+    height: 10vh;
+    margin: auto;
+    align-items: center;
+}
+
+.logo-container, .nav-links, .email{
+    display: flex;
+    font-size: 1vw;
+}
+
+.logo-container {
+    flex: 1;
+    font-size: 1vw;
+}
+
+.logo {
+    color: rgb(0, 0, 22);
+    align-self: center;
+    font-size: 1vw;
+    font-weight: 800;
+    margin: 10px;
+}
+
+nav {
+    flex: 2
+}
+
+.nav-links {
+    justify-content: space-around;
+    list-style: none;
+}
+
+.nav-link {
+    color: rgb(0, 0, 22);
+    font-size: 1vw;
+    font-size-adjust: initial;
+    text-decoration: none;
+}
+
+.email {
+    flex: 1;
+    justify-content: flex-end;
+    list-style: none;
+    color: rgb(0, 0, 22);
+    
+}
+
+.drop-shadow {
+    height: 10px;
+    align-self: baseline;
+    color: black;
+    background-color: rgb(0, 0, 22);
+}
+
+button {
+    background-color: rgb(255, 72, 72);
+    padding: 12px;
+    outline: none;
+}
+
+.main {
+    background-color: rgb(0, 0, 22);
+    color: rgb(0, 0, 22);
+}
+
+.introduction {
+    text-align: center;
+    justify-content: flex-end;
+    background-color: rgb(0, 0, 22);
+    color: white;
+}
+
+.photo{
+    width: 10%;
+    height: 10%;
+}
