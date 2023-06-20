@@ -1,0 +1,84 @@
+@font-face {
+    font-family: myFirstFont;
+    src: url(OpenSans-Medium.ttf);
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+.menu{
+    text-align: center;
+    padding-top: 2%;
+    padding-bottom: 4%;
+    margin: 0;
+    position: sticky;
+    background-color: white;
+    width: 100%;
+    top: 0;
+}
+
+body {
+    font-family: myFirstFont;
+}
+
+body a:link{
+    color:#dd4a4a;
+    text-decoration: none;
+}
+
+body a:visited{
+    color:#dd4a4a;
+}
+
+.menu a {
+    padding: 16px;
+    color: #dd4a4a;
+    display:inline-block;
+    text-decoration: none;
+}
+
+body a:hover {
+    color: #702626;
+}
+
+.projects p{
+    color: #666666;
+}
+
+.highlight{
+    color: #DBC700;
+}
+
+.personal-projects img{
+    width:40%;
+    height:40%;
+}
+
+.personal-projects div{
+    height:auto;
+}
+
+.about-me{
+    padding: 15%;
+}
+
+.projects{
+    text-align: center;
+}
+
+.group {
+    padding-bottom: 10%;
+}
+
+.main-title {
+    padding-bottom: 5%;
+}
+
+.about-me{
+    text-align: center;
+}
+
+.contact-info{
+    text-align: center;
+}
