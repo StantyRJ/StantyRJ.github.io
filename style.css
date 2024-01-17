@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque&family=Inconsolata:wght@400;500;700;900&family=Poppins:wght@100;200;300;400;500;600;700;800&family=Quicksand:wght@300;400;500;600&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
 body 
 {
     background-color: white; 
+    font-family: 'Inconsolata';
     margin: 0;
     padding: 0;
     display: flex;
@@ -8,28 +11,74 @@ body
 
 .map
 {
+    padding-top: 32px;
     flex: 70%;
 }
 
 .UI
 {
     flex: 30%;
+    padding-left: 32px;
+    margin-left: 32px;
+    border-left: 10px solid black;
+    background-color: #feb24c;
     display: flex;
     flex-direction: column;
 }
 
 .retry
 {
-    height: auto;
+    padding-top: 32px;
+    height: 32px;
+    background-color: black;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    width: 128px;
 }
 
-svg path 
+.retry:hover
 {
-    fill: purple;
+    background-color: white;
+    color: black;
+    transition: 0.2s;
+}
+
+svg path
+{
+    stroke: black;
+    stroke-width: .25px;
 }
 
 svg path:hover {
-    fill: rgb(83, 0, 83);
+    filter: brightness(75%);
     transition: 0.3s;
     cursor: pointer;
+}
+
+
+@keyframes flash {
+    0%, 100% {
+      opacity: 0;
+      z-index: 999;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+.correct-message {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+padding: 20px;
+background-color: green;
+color: white;
+z-index: 999;
+font-size: 24px;
+border-radius: 5px;
 }

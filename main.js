@@ -34,13 +34,40 @@ function findCountry(name,europeanCountries)
   return isEuropeanCountry = europeanCountries.find(country => country.name.common === name);
 }
 
+function showMessage(msg,bgCol,anim)
+{
+  const correctMessage = document.createElement('div');
+  correctMessage.className = 'correct-message';
+  correctMessage.textContent = msg;
+  correctMessage.style.backgroundColor = bgCol;
+  correctMessage.style.animation = 'flash '+ anim +'s ease-in-out';
 
+  // Append the correct message to the body
+  document.body.appendChild(correctMessage);
+
+  // Remove the correct message after a delay (e.g., 2 seconds)
+  setTimeout(() => {
+    document.body.removeChild(correctMessage);
+  }, 1000 * anim - 100);
+}
 
 function getRandomQuestion(difficultyLevel,categorys)
 {
   availiableCategories = categorys[Math.floor(Math.random() * difficultyLevel)]
   category = availiableCategories[Math.floor(Math.random() * availiableCategories.length)]
   return category;
+}
+
+function randomColors()
+{
+  let colors = ['#855C75','#D9AF6B','#e34a33','#AF6458','#736F4C','#526A83','#625377','#68855C','#9C9C5E','#A06177','#8C785D','#467378','#7C7C7C'];
+  let count = 0;
+  $("path").each(function(){
+    $(this).css('fill', colors[count]);
+    count ++ 
+    if(count >= colors.length)
+      count = 0
+  })
 }
 
 function categorysToQuestion(europeanCountries,category)
@@ -57,22 +84,41 @@ function categorysToQuestion(europeanCountries,category)
   switch(category)
   {
     case 'name':
-      $('.HUD').append("<p>Where is " + randomEuropeanCountry.name.common + "?")
+      $('.HUD').append("<h2>Where is " + randomEuropeanCountry.name.common + "?</h2>")
     break;
 
     case 'flag':
-      console.log(randomEuropeanCountry.flags.png)
-      $('.HUD').append('<p>Where is the country with this flag?</p> <img src="'+randomEuropeanCountry.flags.png+'">')
+      $('.HUD').append('<h2>Where is the country with this flag?</h2> <img src="'+randomEuropeanCountry.flags.png+'">')
     break;
+
+    case 'neighbors':
+      $('.HUD').append('<h2>What country has these neighbours</h2>')
+      for(i of randomEuropeanCountry.borders)
+        $('.HUD').append(`<p>${i}</p>`)
+
+      if(randomEuropeanCountry.borders.length == 0)
+      {
+        if(randomEuropeanCountry.name.common === 'Cyprus')
+          $('.HUD').append('This country has no neighbours (HINT: its half turkish, half greek)')
+        else
+          $('.HUD').append('This country has no neighbours (HINT: they bake bread in the ground)')
+      }
+    break;
+
+    case 'capital':
+      $('.HUD').append(`<h2>What country has this capital: ${randomEuropeanCountry.capital[0]}</h2>`)
+    break
   }
   return randomEuropeanCountry;
 }
 
-function updateUI(lives,score,category,categorys,difficultyLevel,highScore)
+function updateUI(lives,score,category,categorys,difficultyLevel,highScore,lastCountry)
 {
   $(".HUD").html(`<p>Lives: ${'X'.repeat(lives)}</p><p>Score: ${score}</p><p>Highscore: ${highScore}</p>`)
   category = getRandomQuestion(difficultyLevel,categorys)
   country = categorysToQuestion(europeanCountries,category)
+  while(lastCountry == country.name.common)
+    country = categorysToQuestion(europeanCountries,category)
   return country
 }
 
@@ -82,53 +128,71 @@ async function setUp()
   let score = 0;
   let highScore = 0;
   let difficultyLevel = 1;
-  let lost = false
-  categorys = [['name'],['flag'],['neighbors'],['population','area']];
+  let lastCountry = '';
+  let lost = false;
+  categorys = [['name'],['flag'],['neighbors'],['capital']];
   category = ''
   $('.retry').hide()
+  randomColors()
+
   europeanCountries = await getEuropeanCountrys();
   console.log(europeanCountries)
-  let country = updateUI(lives,score,category,categorys,difficultyLevel,highScore)
+  let country = updateUI(lives,score,category,categorys,difficultyLevel,highScore,lastCountry)
 
-    if(lost === false)
+
+  $("path").on('click',function(){
+    if(!lost)
     {
-      $("path").on('click',function(){
-        console.log($(this).attr('name'))
-        countryClicked = findCountry($(this).attr('name'),europeanCountries)
-        if(countryClicked.name.common === country.name.common)
-        {
-          score += 1000
-          if(score > highScore)
-            highScore = score
-          country = updateUI(lives,score,category,categorys,difficultyLevel,highScore)
-          $('.HUD').append('<p>CORRECT!</p>')
-        }
-        else
-        {
-          lives --
-          country = updateUI(lives,score,category,categorys,difficultyLevel)
-          $('.HUD').append('<p>INCORRECT</p>')
-        }
+      countryClicked = findCountry($(this).attr('name'),europeanCountries)
+      if(countryClicked.name.common === country.name.common)
+      {
+        
+        score += 1000
+        if(score > highScore)
+          highScore = score
+        lastCountry = country.name.common
+        country = updateUI(lives,score,category,categorys,difficultyLevel,highScore,lastCountry)
+        if(score != 5000 && score != 10000 && score != 15000)
+          showMessage('Correct!','green',.5)
+      }
+      else
+      {
+        lives --
+        showMessage('Incorrect!','red',.5)
+        country = updateUI(lives,score,category,categorys,difficultyLevel,highScore,lastCountry)
+      }
 
-        if(lives <= 0)
-        {
-          lost = true
-          $('.retry').show()
-        }
+      if(lives <= 0)
+      {
+        lost = true
+        $('.retry').show()
+      }
 
-        if(score >= 5000 && difficultyLevel != 2)
-          difficultyLevel++
-      })
+      if(score >= 5000 && difficultyLevel < 2)
+      {
+        difficultyLevel++
+        showMessage('Round 2: + Flags','blue',2)
+      }
+      else if(score >= 10000 && difficultyLevel < 3)
+      {
+        difficultyLevel++
+        showMessage('Round 3: + Neighbours','blue',2)
+      }
+      else if(score >= 15000 && difficultyLevel < 4)
+      {
+        difficultyLevel++
+        showMessage('Round 3: + Capitals','blue',2)
+      }
     }
+  })
 
-    $(".retry").on('click',function(){
-      console.log("here")
-      lives = 3
-      score = 0 
-      difficultyLevel = 1
-      country = updateUI(lives,score,category,categorys,difficultyLevel)
-      lost = false
-      $(".retry").hide();
-    })
+  $(".retry").on('click',function(){
+    lives = 3
+    score = 0 
+    difficultyLevel = 1
+    country = updateUI(lives,score,category,categorys,difficultyLevel,highScore,lastCountry)
+    lost = false
+    $(".retry").hide();
+  })
 }
   
